@@ -18,10 +18,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Run deployment script
+      - name: Upload deploy script to server
         env:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'bash -s' < /var/www/laravel/public/deploy.sh
+          scp -o StrictHostKeyChecking=no ./deploy.sh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/var/www/laravel/deploy.sh
 
+      - name: Run deployment script on server
+        env:
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'bash /var/www/laravel/deploy.sh'
