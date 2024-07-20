@@ -23,11 +23,18 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         run: |
-          scp -o StrictHostKeyChecking=no ./deploy.sh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/var/www/laravel/deploy.sh
+          scp -o StrictHostKeyChecking=no ./deploy.sh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/home/larasail/deploy.sh
+
+      - name: Set deploy script permissions
+        env:
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'chmod +x /home/larasail/deploy.sh'
 
       - name: Run deployment script on server
         env:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'bash /var/www/laravel/deploy.sh'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'bash /home/larasail/deploy.sh'
